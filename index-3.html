@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>🌸 Chore Cuties</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── FLOATING DECO (CSS only) ── -->
+<div class="bg-deco" aria-hidden="true">
+  <span class="deco-star s1">⭐</span>
+  <span class="deco-star s2">💫</span>
+  <span class="deco-star s3">✨</span>
+  <span class="deco-star s4">🌸</span>
+  <span class="deco-star s5">⭐</span>
+  <span class="deco-star s6">💕</span>
+  <span class="deco-star s7">🍭</span>
+  <span class="deco-star s8">✨</span>
+</div>
+
+<!-- ══════════════ OVERLAYS ══════════════ -->
+
+<!-- CELEBRATION -->
+<div id="celebration" class="overlay hidden">
+  <canvas id="confetti-canvas"></canvas>
+  <div class="kawaii-card celebrate-card">
+    <div class="cel-face">🏆</div>
+    <h2 class="cel-title">Yay!! Goal Reached~!</h2>
+    <p class="cel-sub" id="cel-goal-name"></p>
+    <p class="cel-pts" id="cel-pts"></p>
+    <button class="kbtn kbtn--purple" id="btn-redeem">🎁 Redeem Reward!</button>
+    <button class="kbtn-ghost" id="btn-cel-close">maybe later (◡‿◡✿)</button>
+  </div>
+</div>
+
+<!-- CHORE MODAL -->
+<div id="chore-modal" class="overlay hidden" role="dialog" aria-modal="true">
+  <div class="kawaii-card modal-card">
+    <div class="modal-deco">✏️</div>
+    <h2 id="chore-modal-title" class="modal-title">Add a Chore~</h2>
+    <input type="hidden" id="chore-id" />
+    <div class="kfield">
+      <label>Emoji</label>
+      <input type="text" id="chore-emoji" maxlength="2" placeholder="⭐" class="emoji-input" />
+    </div>
+    <div class="kfield">
+      <label>Chore Name</label>
+      <input type="text" id="chore-name" placeholder="e.g. Make your bed ♡" />
+    </div>
+    <div class="kfield">
+      <label>Points ⭐</label>
+      <input type="number" id="chore-points" min="1" max="9999" value="10" />
+    </div>
+    <div class="kfield">
+      <label>Schedule</label>
+      <select id="chore-schedule">
+        <option value="daily">🌞 Daily</option>
+        <option value="weekly">📅 Weekly</option>
+        <option value="onetime">🌟 One-time</option>
+      </select>
+    </div>
+    <div class="kfield">
+      <label>Notes (optional)</label>
+      <input type="text" id="chore-notes" placeholder="e.g. Before school~" />
+    </div>
+    <div class="modal-btns">
+      <button class="kbtn kbtn--green" id="btn-save-chore">💾 Save!</button>
+      <button class="kbtn-ghost" id="btn-cancel-chore">cancel~</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div id="goal-modal" class="overlay hidden" role="dialog" aria-modal="true">
+  <div class="kawaii-card modal-card">
+    <div class="modal-deco">🎯</div>
+    <h2 class="modal-title">Set a Goal~</h2>
+    <div class="kfield">
+      <label>Goal Name</label>
+      <input type="text" id="goal-name" placeholder="e.g. Movie Night 🍿" />
+    </div>
+    <div class="kfield">
+      <label>Points Required</label>
+      <input type="number" id="goal-points" min="1" max="99999" value="100" />
+    </div>
+    <div class="modal-btns">
+      <button class="kbtn kbtn--green" id="btn-save-goal">💾 Save!</button>
+      <button class="kbtn-ghost" id="btn-cancel-goal">cancel~</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div id="import-modal" class="overlay hidden" role="dialog" aria-modal="true">
+  <div class="kawaii-card modal-card">
+    <div class="modal-deco">⚠️</div>
+    <h2 class="modal-title">Import Data?</h2>
+    <p class="modal-note">This will replace all current data~</p>
+    <div class="modal-btns">
+      <button class="kbtn kbtn--pink" id="btn-confirm-import">Yes, import!</button>
+      <button class="kbtn-ghost" id="btn-cancel-import">cancel~</button>
+    </div>
+  </div>
+</div>
+
+<!-- COUPON -->
+<div id="coupon-view" class="overlay hidden">
+  <div class="coupon-wrap">
+    <div class="coupon-card">
+      <div class="coupon-top-deco">🌸 ⭐ 🌸 ⭐ 🌸</div>
+      <div class="coupon-icon">🎟️</div>
+      <h1 class="coupon-title">REWARD COUPON</h1>
+      <p class="coupon-label">This certifies that</p>
+      <h2 class="coupon-name" id="coupon-kid-name">⭐ Superstar ⭐</h2>
+      <p class="coupon-label">has earned the reward of</p>
+      <h2 class="coupon-reward" id="coupon-reward-name"></h2>
+      <p class="coupon-date" id="coupon-date"></p>
+      <div class="coupon-bottom-deco">💕 💕 💕 💕 💕</div>
+    </div>
+    <div class="no-print coupon-actions">
+      <button class="kbtn kbtn--blue" onclick="window.print()">🖨️ Print Coupon!</button>
+      <button class="kbtn-ghost" id="btn-close-coupon">close~</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ APP SHELL ══════════════ -->
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="kheader">
+    <div class="kheader-left">
+      <span class="klogo">🌸</span>
+      <span class="kapp-title">Chore Cuties</span>
+    </div>
+    <div class="kheader-right">
+      <div class="streak-pill">
+        <span>🔥</span>
+        <span id="streak-count">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── TODAY TAB ── -->
+  <section id="tab-today" class="tab-content active">
+
+    <!-- Points blob -->
+    <div class="points-blob">
+      <div class="points-side">
+        <div class="pts-lbl">Today</div>
+        <div class="pts-num" id="pts-today">0</div>
+        <div class="pts-unit">stars ⭐</div>
+      </div>
+      <div class="pts-divider"></div>
+      <div class="points-side">
+        <div class="pts-lbl">Total</div>
+        <div class="pts-num" id="pts-total">0</div>
+        <div class="pts-unit">stars ⭐</div>
+      </div>
+    </div>
+
+    <!-- Goal card -->
+    <div class="goal-bubble">
+      <div class="goal-bubble-top">
+        <span class="goal-icon">🎯</span>
+        <span class="goal-name" id="goal-text">No goal yet~ (◕‿◕)</span>
+        <span class="goal-frac" id="goal-fraction"></span>
+      </div>
+      <div class="kprogress-track">
+        <div class="kprogress-fill" id="progress-fill"></div>
+        <div class="kprogress-label" id="progress-label">0%</div>
+      </div>
+    </div>
+
+    <!-- Completion flash -->
+    <div id="completion-msg" class="flash-msg hidden"></div>
+
+    <!-- View switcher -->
+    <div class="view-switcher">
+      <button class="view-btn active" data-view="daily">🌞 Daily</button>
+      <button class="view-btn" data-view="weekly">📅 Weekly</button>
+      <button class="view-btn" data-view="monthly">🗓️ Monthly</button>
+    </div>
+
+    <!-- View: Daily -->
+    <div id="view-daily" class="chore-view active">
+      <div class="view-header">
+        <h2 class="view-title">Today's Chores ♡</h2>
+        <span class="chore-count" id="daily-count"></span>
+      </div>
+      <ul class="chore-list" id="chore-list-daily"></ul>
+      <p class="empty-kawaii hidden" id="empty-daily">No chores yet!<br/>Go to ⚙️ Settings to add some~ (◕‿◕✿)</p>
+    </div>
+
+    <!-- View: Weekly -->
+    <div id="view-weekly" class="chore-view hidden">
+      <div class="view-header">
+        <h2 class="view-title">This Week ♡</h2>
+        <span class="chore-count" id="weekly-count"></span>
+      </div>
+      <!-- Weekly calendar strip -->
+      <div class="week-strip" id="week-strip"></div>
+      <ul class="chore-list" id="chore-list-weekly"></ul>
+      <p class="empty-kawaii hidden" id="empty-weekly">No weekly chores~<br/>Add some in ⚙️ Settings! (✿◠‿◠)</p>
+    </div>
+
+    <!-- View: Monthly -->
+    <div id="view-monthly" class="chore-view hidden">
+      <div class="view-header">
+        <h2 class="view-title">This Month ♡</h2>
+      </div>
+      <div class="month-grid" id="month-grid"></div>
+      <div class="month-legend">
+        <span class="legend-dot done-dot"></span><span>Chores done</span>
+        <span class="legend-dot none-dot"></span><span>No chores</span>
+        <span class="legend-dot today-dot"></span><span>Today</span>
+      </div>
+      <div class="month-stats" id="month-stats"></div>
+    </div>
+
+  </section>
+
+  <!-- ── GOALS TAB ── -->
+  <section id="tab-goals" class="tab-content hidden">
+    <h2 class="tab-heading">🎯 My Goal~</h2>
+
+    <div class="kawaii-card goal-detail-card">
+      <div class="gdc-emoji">🌟</div>
+      <div class="gdc-name" id="gdc-name">No goal set yet!</div>
+      <div class="gdc-pts" id="gdc-pts"></div>
+      <div class="kprogress-track kprogress-track--lg">
+        <div class="kprogress-fill" id="progress-fill-2"></div>
+        <div class="kprogress-label" id="progress-label-2">0%</div>
+      </div>
+    </div>
+
+    <button class="kbtn kbtn--pink" id="btn-edit-goal">✏️ Edit Goal~</button>
+
+    <div class="kawaii-card">
+      <div class="kcard-title">💝 When I Redeem Points~</div>
+      <label class="kradio"><input type="radio" name="redeem" value="subtract" id="redeem-subtract" /><span>Subtract goal points</span></label>
+      <label class="kradio"><input type="radio" name="redeem" value="reset" id="redeem-reset" /><span>Reset all to zero</span></label>
+    </div>
+
+    <button class="kbtn kbtn--outline" id="btn-reset-points">🔄 Reset All Points~</button>
+  </section>
+
+  <!-- ── SETTINGS TAB ── -->
+  <section id="tab-settings" class="tab-content hidden">
+    <h2 class="tab-heading">⚙️ Settings~</h2>
+
+    <div class="kawaii-card">
+      <div class="kcard-title">👤 My Name~</div>
+      <input type="text" id="kid-name-input" placeholder="Enter your name ♡" class="kinput" />
+    </div>
+
+    <div class="kawaii-card">
+      <div class="kcard-title">📋 My Chores~</div>
+      <ul class="manage-list" id="chore-manage-list"></ul>
+      <button class="kbtn kbtn--pink" id="btn-add-chore">➕ Add a Chore~</button>
+    </div>
+
+    <div class="kawaii-card">
+      <div class="kcard-title">💬 Happy Messages~</div>
+      <div class="msg-list" id="messages-list"></div>
+      <button class="kbtn-sm kbtn--outline" id="btn-add-msg">➕ Add Message</button>
+    </div>
+
+    <div class="kawaii-card">
+      <div class="kcard-title">💾 Backup Data~</div>
+      <div class="data-btns">
+        <button class="kbtn-sm kbtn--outline" id="btn-export">📤 Export</button>
+        <label class="kbtn-sm kbtn--outline" for="import-file-input">📥 Import</label>
+        <input type="file" id="import-file-input" accept=".json" class="sr-only" />
+      </div>
+    </div>
+  </section>
+
+</div><!-- #app -->
+
+<!-- ── BOTTOM NAV ── -->
+<nav class="knav">
+  <button class="knav-btn active" data-tab="today">
+    <span class="knav-icon">🏠</span>
+    <span class="knav-lbl">Today</span>
+  </button>
+  <button class="knav-btn" data-tab="goals">
+    <span class="knav-icon">🌟</span>
+    <span class="knav-lbl">Goals</span>
+  </button>
+  <button class="knav-btn" data-tab="settings">
+    <span class="knav-icon">🍭</span>
+    <span class="knav-lbl">Settings</span>
+  </button>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
